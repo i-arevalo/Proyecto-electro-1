@@ -1,0 +1,17 @@
+clear;
+clc;
+
+
+
+%Declaración de constantes
+
+r = 2;
+e0 = 1;                 %Permeabilidad relativa del vacío
+
+
+[rho,theta] = meshgrid(2:0.5:10,0:pi./6:2.*pi);
+Z = (-(-e0) .* rho .* cos(theta) .* (((r.^2)./(rho.^2))-1));
+C = rho.*theta;
+[x,y] = pol2cart(theta,rho);
+surf(x,y,Z,C);
+colorbar
