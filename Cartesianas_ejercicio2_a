@@ -43,93 +43,133 @@ tab3 = uitab( tabgp, 'title','Densidad eléctrica');
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,1,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,10,2);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,2);
 C = x.*y;
 surf(ax1,x,y,V,C);
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
 colorbar
 %campo
 ax2 = axes (tab2);
 subplot(2,2,1,ax2);
 C = x.*y;
-surf(ax2,x,y,E,C);
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
-colorbar
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,1,ax3);
 C = x.*y;
 surf(ax3,x,y,den,C);
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad volumétrica");
 colorbar
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,2,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,10,5);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,5);
 C = x.*y;
 surf(ax1,x,y,V,C);
 legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
 colorbar
 %campo
 ax2 = axes (tab2);
 subplot(2,2,2,ax2);
 C = x.*y;
-surf(ax2,x,y,E,C);
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
 legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
-colorbar
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,2,ax3);
 C = x.*y;
 surf(ax3,x,y,den,C);
 legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad volumétrica");
 colorbar
 
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,3,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,10,10);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,10);
 C = x.*y;
 surf(ax1,x,y,V,C);
 legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
 colorbar
 %campo
 ax2 = axes (tab2);
 subplot(2,2,3,ax2);
 C = x.*y;
-surf(ax2,x,y,E,C);
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
 legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
-colorbar
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,3,ax3);
 C = x.*y;
 surf(ax3,x,y,den,C);
 legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad eléctrica");
 colorbar
 
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,4,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,10,20);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,20);
 C = x.*y;
 surf(ax1,x,y,V,C);
 legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
 colorbar
 %campo
 ax2 = axes (tab2);
 subplot(2,2,4,ax2);
 C = x.*y;
-surf(ax2,x,y,E,C);
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
 legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
-colorbar
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,4,ax3);
 C = x.*y;
 surf(ax3,x,y,den,C);
 legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad eléctrica");
 colorbar
