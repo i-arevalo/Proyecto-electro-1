@@ -131,7 +131,7 @@ C = x.*y;
 plot(ax3,y,den);
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
 xlabel("y");
-ylabel("Densidas superficial");
+ylabel("Densidad superficial");
 
 %n=5
 %%%%%%%%%%%
@@ -163,7 +163,7 @@ C = x.*y;
 plot(ax3,y,den);
 legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
 xlabel("y");
-ylabel("Densidas superficial");
+ylabel("Densidad superficial");
 
 %n=10
 %%%%%%%%%%%
@@ -195,7 +195,7 @@ C = x.*y;
 plot(ax3,y,den);
 legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
 xlabel("y");
-ylabel("Densidas superficial");
+ylabel("Densidad superficial");
 
 %n=20
 %%%%%%%%%%%
@@ -227,4 +227,4 @@ C = x.*y;
 plot(ax3,y,den);
 legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
 xlabel("y");
-ylabel("Densidas superficial");
+ylabel("Densidad superficial");
