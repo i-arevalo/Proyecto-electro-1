@@ -1,0 +1,239 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%Integrantes: Israel Arévalo 18267
+%             Rodrigo Díaz   18265
+%             Carlos Letona  18082
+%
+%Materia: Teoría electromagnética 1
+%
+%Año: 2020
+%
+%Descripción: Este programa grafica el potencial, campo eléctrico y densidad de superficie
+%             del problema 3 de coordenadas cartesianas.
+%
+%Referencias: Las funciónes "y_callback", "Handle", "on_tab_select" y "tabContents" fueron extrídas del
+%             siguiente link:https://stackoverflow.com/questions/58199830/how-do-you-create-a-uitab-or-uitabgroup
+%
+%             La función "electro" fue realizada con base en la función "recl_serie" de Jorge Castillo
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Código extraído de: https://stackoverflow.com/questions/58199830/how-do-you-create-a-uitab-or-uitabgroup
+% in 'uitabs_octave_demo.m'
+
+% Starting an m-file with an instruction as opposed to a 'function' keyword, 
+%   interprets the m-file as a script, as opposed to a function definition. 
+1;
+
+% In octave, in-line functions need to be defined 'before' their use, as opposed
+%   to matlab which demands them at the 'end' of a script.
+
+function y_callback( Handle, Event, PlotHandle, XVal )
+   YData = get( PlotHandle, 'ydata' );
+   YData( XVal ) = str2num( get( Handle, 'string' ) );
+   set( PlotHandle, 'ydata', YData );
+end
+
+% This is the "extra" bit we provide; since octave does not currently implement the
+%   'uitabgroup' and 'uitab' functions, we provide our own definitions for them here
+
+function Handle = uitabgroup( FigHandle, PosOpt, PosVal )
+   Handle = uipanel( FigHandle, PosOpt, PosVal);
+   setappdata( Handle, 'tabs_buttons', {} );
+   setappdata( Handle, 'tabs_contents', {} );
+end
+
+function on_tab_select( Handle, Event, TabGroupHandle, TabContents )
+   Tabs_contents = getappdata( TabGroupHandle, 'tabs_contents' )
+   for i=1:length(Tabs_contents); set(Tabs_contents{i}, 'visible', 'off'); end
+   set( TabContents, 'visible', 'on' );
+end
+
+function TabContents = uitab( TabGroupHandle, TitleOpt, TitleVal )
+   Tabs_buttons  = getappdata( TabGroupHandle, 'tabs_buttons'  );
+   Tabs_contents = getappdata( TabGroupHandle, 'tabs_contents' );
+   TabContents = uipanel( TabGroupHandle, 'units', 'normalized', 'position', [ 0, 0, 1, 0.95 ] );
+   TabButton   = uicontrol( TabGroupHandle, 'style', 'pushbutton' ,'string', TitleVal, 'units', 'normalized', 'position', [ length(Tabs_buttons) * 0.1, 0.95, 0.1, 0.05 ], 'callback', {@on_tab_select, TabGroupHandle, TabContents } );
+   Tabs_buttons{end+1}  = TabButton;
+   Tabs_contents{end+1} = TabContents;
+   setappdata( TabGroupHandle, 'tabs_buttons' , Tabs_buttons );
+   setappdata( TabGroupHandle, 'tabs_contents', Tabs_contents );
+end
+
+% Rest of script as before
+
+clf
+clear;
+clc;
+
+%Función para obtener el valor del campo, potencial y densidad a partir de la sumatoria
+%Para hacer esta función se tomó como referencia la función "recl_serie" de Jorge Castillo
+function [x,y,z,rho,theta,V,E,den] = electro(a,b,c,n)
+  xbar = 0:0.05:a;
+  ybar = 0:0.05:b;
+  zbar = 0:0.05:c;
+  [x,y,z] = meshgrid(xbar,ybar,zbar);
+  serie = 0;
+  den = 0;
+  e0 = 8.84 .*10 .^-12;
+  z=x;
+  for i = 1:n
+    k=i*pi/b;
+    func = @(x,y)(4 ./(a.*b).*(y.^2.*sin(k.*y))x.*sin(k.*x));
+    %funcx = @(x)(x.*sin(k.*x));
+    Cn = integral(funcy,0,a).*integral(funcx,0,b);
+    ter = Cn.*e.^(-pi.*sqrt((n./a).^2+(n./b).^2).*z).*sin(k.*y).*sin(((pi.*n)./a).*x);
+    serie += ter;
+  end
+  V = serie;
+  E = -gradient(V);
+  [rho,theta] = gradient(-V);
+end
+
+
+%Condiciones iniciales
+%%%%%%%%%%%%%%%%%%%%%%
+f = figure( 1 );   
+set( f, 'position', [50, 50, 500, 500 ] );
+tabgp = uitabgroup( f, 'position', [.05, .05, .9, .9] );
+tab1 = uitab( tabgp, 'title','Potencial eléctrico');
+tab2 = uitab( tabgp, 'title','Campo eléctrico');
+tab3 = uitab( tabgp, 'title','Densidad eléctrica');
+
+%Problema 1
+%%%%%%%%%%%
+
+
+%Potencial
+ax1 = axes (tab1);
+subplot(2,2,1,ax1);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,1,2);
+surf(ax1,x,y,V,V);
+legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
+colorbar
+%campo
+ax2 = axes (tab2);
+subplot(2,2,1,ax2);
+C = x.*y;
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
+legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
+%densidad
+ax3 = axes (tab3);
+subplot(2,2,1,ax3);
+C = x.*y;
+surf(ax3,x,y,den,C);
+legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad volumétrica");
+colorbar
+
+%Potencial
+ax1 = axes (tab1);
+subplot(2,2,2,ax1);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,1,5);
+%C = x.*y;
+surf(ax1,x,y,V,V);
+legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
+colorbar
+%campo
+ax2 = axes (tab2);
+subplot(2,2,2,ax2);
+C = x.*y;
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
+legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
+%densidad
+ax3 = axes (tab3);
+subplot(2,2,2,ax3);
+C = x.*y;
+surf(ax3,x,y,den,C);
+legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad volumétrica");
+colorbar
+
+
+%Potencial
+ax1 = axes (tab1);
+subplot(2,2,3,ax1);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,1,10);
+%C = x.*y;
+surf(ax1,x,y,V,V);
+legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
+colorbar
+%campo
+ax2 = axes (tab2);
+subplot(2,2,3,ax2);
+C = x.*y;
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
+legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
+%densidad
+ax3 = axes (tab3);
+subplot(2,2,3,ax3);
+C = x.*y;
+surf(ax3,x,y,den,C);
+legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad eléctrica");
+colorbar
+
+
+%Potencial
+ax1 = axes (tab1);
+subplot(2,2,4,ax1);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,1,20);
+%C = x.*y;
+surf(ax1,x,y,V,V);
+legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
+colorbar
+%campo
+ax2 = axes (tab2);
+subplot(2,2,4,ax2);
+C = x.*y;
+quiver3(ax2,x,y,E,C);
+axis( [0, 20, 0, 30 ] );
+legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Campo");
+%colorbar
+%densidad
+ax3 = axes (tab3);
+subplot(2,2,4,ax3);
+C = x.*y;
+surf(ax3,x,y,den,C);
+legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
+xlabel("x");
+ylabel("y");
+zlabel("Densidad eléctrica");
+colorbar
