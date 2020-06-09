@@ -69,28 +69,32 @@ clc;
 
 %Función para obtener el valor del campo, potencial y densidad a partir de la sumatoria
 %Para hacer esta función se tomó como referencia la función "recl_serie" de Jorge Castillo
-function [x,y,z,rho,theta,V,E,den] = electro(a,b,c,n)
+function [x,y,z,rho,theta,V,E,den] = electro(a,b,n,m)
   xbar = 0:0.05:a;
   ybar = 0:0.05:b;
-  zbar = 0:0.05:c;
-  [x,y,z] = meshgrid(xbar,ybar,zbar);
+  [x,y] = meshgrid(xbar,ybar);
   serie = 0;
   den = 0;
   e0 = 8.84 .*10 .^-12;
-  z=x;
+  z = 0:0.05:1;
+  %z=zbar;
   for i = 1:n
-    k=i*pi/b;
-    func = @(x,y)(4 ./(a.*b).*(y.^2.*sin(k.*y))x.*sin(k.*x));
-    %funcx = @(x)(x.*sin(k.*x));
-    Cn = integral(funcy,0,a).*integral(funcx,0,b);
-    ter = Cn.*e.^(-pi.*sqrt((n./a).^2+(n./b).^2).*z).*sin(k.*y).*sin(((pi.*n)./a).*x);
-    serie += ter;
-  end
+    for ii = 1:m
+      k = i.*pi./a;
+      l = ii.*pi./b;
+      func = @(x,y)(4 ./(a.*b).*(y.^2.*sin(l.*y)).*x.*sin(k.*x));
+      Cn = integral2(func,0,b,0,a);
+      ter = Cn.*e.^(-pi.*sqrt((n./a).^2+(m./b).^2).*z).*sin(l.*y).*sin(k.*x);
+      serie += ter;
+      terden = Cn.*(-pi.*sqrt((n./a).^2+(m./b).^2).*sin(l.*y).*sin(k.*x))
+      den+=terden;
+    endfor
+  endfor
   V = serie;
   E = -gradient(V);
-  [rho,theta] = gradient(-V);
-end
-
+  [rho,theta] = gradient(V);
+  %[rho,theta] = gradient(-V);
+endfunction
 
 %Condiciones iniciales
 %%%%%%%%%%%%%%%%%%%%%%
@@ -101,31 +105,30 @@ tab1 = uitab( tabgp, 'title','Potencial eléctrico');
 tab2 = uitab( tabgp, 'title','Campo eléctrico');
 tab3 = uitab( tabgp, 'title','Densidad eléctrica');
 
-%Problema 1
+%n=2
 %%%%%%%%%%%
-
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,1,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,1,1,2);
-surf(ax1,x,y,V,V);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,2,2);
+C = x.*y;
+contour3(ax1,V);
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Potencial");
-colorbar
+zlabel("z");
+colorbar;
 %campo
 ax2 = axes (tab2);
 subplot(2,2,1,ax2);
 C = x.*y;
-quiver3(ax2,x,y,E,C);
+quiver3(ax2,x,y,rho,theta);
 axis( [0, 20, 0, 30 ] );
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
 zlabel("Campo");
-%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,1,ax3);
@@ -134,19 +137,21 @@ surf(ax3,x,y,den,C);
 legend({'n=2'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Densidad volumétrica");
-colorbar
+zlabel("Densidad superficial");
+
+%n=5
+%%%%%%%%%%%
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,2,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,1,1,5);
-%C = x.*y;
-surf(ax1,x,y,V,V);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,5,5);
+C = x.*y;
+contour3(ax1,V);
 legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Potencial");
+zlabel("z");
 colorbar
 %campo
 ax2 = axes (tab2);
@@ -158,7 +163,6 @@ legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
 zlabel("Campo");
-%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,2,ax3);
@@ -167,21 +171,22 @@ surf(ax3,x,y,den,C);
 legend({'n=5'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Densidad volumétrica");
-colorbar
+zlabel("Densidad superficial");
 
+%n=10
+%%%%%%%%%%%
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,3,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,1,1,10);
-%C = x.*y;
-surf(ax1,x,y,V,V);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,10,10);
+C = x.*y;
+contour3(ax1,V);
 legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Potencial");
-colorbar
+zlabel("z");
+colorbar;
 %campo
 ax2 = axes (tab2);
 subplot(2,2,3,ax2);
@@ -192,7 +197,6 @@ legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
 zlabel("Campo");
-%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,3,ax3);
@@ -201,20 +205,21 @@ surf(ax3,x,y,den,C);
 legend({'n=10'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Densidad eléctrica");
-colorbar
+zlabel("Densidad superficial");
 
+%n=20
+%%%%%%%%%%%
 
 %Potencial
 ax1 = axes (tab1);
 subplot(2,2,4,ax1);
-[x,y,z,rho,theta,V,E,den] = electro(1,1,1,20);
+[x,y,z,rho,theta,V,E,den] = electro(1,1,20,20);
 %C = x.*y;
-surf(ax1,x,y,V,V);
+contour3(ax1,V);
 legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Potencial");
+zlabel("z");
 colorbar
 %campo
 ax2 = axes (tab2);
@@ -226,7 +231,6 @@ legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
 zlabel("Campo");
-%colorbar
 %densidad
 ax3 = axes (tab3);
 subplot(2,2,4,ax3);
@@ -235,5 +239,4 @@ surf(ax3,x,y,den,C);
 legend({'n=20'}, 'Location','northwest','Orientation','horizontal');
 xlabel("x");
 ylabel("y");
-zlabel("Densidad eléctrica");
-colorbar
+zlabel("Densidad superficial");
