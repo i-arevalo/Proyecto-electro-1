@@ -1,17 +1,33 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%Integrantes: Israel Arévalo 18267
+%             Rodrigo Díaz   18265
+%             Carlos Letona  18082
+%
+%Materia: Teoría electromagnética 1
+%
+%Año: 2020
+%
+%Descripción: Este programa grafica el potencial, campo eléctrico y densidad de superficie
+%             del problema 1.a de coordenadas cartesianas.
+%
+%Referencias: Ninguna
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear;
 clc;
-
-
 
 %Declaración de constantes
 
 r = 2;
-e0 = 1;                 %Permeabilidad relativa del vacío
-
+e0 = 8.84 .*10 .^-12;                 %Permeabilidad relativa del vacío
 
 [rho,theta] = meshgrid(2:0.5:10,0:pi./6:2.*pi);
 Z = (-(-e0) .* rho .* cos(theta) .* (((r.^2)./(rho.^2))-1));
 C = rho.*theta;
 [x,y] = pol2cart(theta,rho);
 surf(x,y,Z,C);
-colorbar
+title( 'Potencial eléctrico r>R', 'fontsize', 10, 'fontweight', 'normal' );
+xlabel("x");
+ylabel("y");
+zlabel("Potencial");
