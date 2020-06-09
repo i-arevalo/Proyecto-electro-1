@@ -1,3 +1,23 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%Integrantes: Israel Arévalo 18267
+%             Rodrigo Díaz   18265
+%             Carlos Letona  18082
+%
+%Materia: Teoría electromagnética 1
+%
+%Año: 2020
+%
+%Descripción: Este programa grafica el potencial, campo eléctrico y densidad de superficie
+%             del problema 1 de coordenadas esférica.
+%
+%Referencias: Las funciónes "y_callback", "Handle", "on_tab_select" y "tabContents" fueron extrídas del
+%             siguiente link:https://stackoverflow.com/questions/58199830/how-do-you-create-a-uitab-or-uitabgroup
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Código extraído de: https://stackoverflow.com/questions/58199830/how-do-you-create-a-uitab-or-uitabgroup
 % in 'uitabs_octave_demo.m'
 
 % Starting an m-file with an instruction as opposed to a 'function' keyword, 
@@ -62,33 +82,36 @@ e0 = 8.84 .*10 .^-12;                 %Permeabilidad relativa del vacío
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ax = axes (tab2);
 [r,theta] = meshgrid(0:0.1:2,0:pi./6:2.*pi);
-A1 = R.^3.*((6 ./5)+(-9 ./(6 .*e0)));
-B1 = (3 ./(2.*e0)+(6./5));%listo
+A1 = (3 .*R.^3) ./(10 .*e0);
+B1 = (3 ./(10 .*e0));%listo
 A3 = (12 .*R.^5)./(35.*e0);
-B3 = 12 ./(e0.*35 .*R.^2);%listo
+B3 = 12 .*R.^5./(e0.*35);%listo
 %Gráfica del potencial r<R
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,1,1,ax);
-Vin = B1.*r.*cos(theta) + B3.*(r.^3).*(((5 .*(cos(theta)).^3)-(3 .*cos(theta)))./2);
+Vin = B1.*r.*cos(theta) - B3.*(r.^3).*(((5 .*(cos(theta)).^3)-(3 .*cos(theta)))./2);
 C = r.*theta;
-[x,y] = pol2cart(r,theta);
+[x,y] = pol2cart(theta,r);
 surf(ax,x,y,Vin,C);
-colorbar
 axis( [-10, 10, -10, 10 ] );
 title( 'Potencial eléctrico r<R', 'fontsize', 10, 'fontweight', 'normal' );
+xlabel("x");
+ylabel("y");
+zlabel("Vin");
 %Gráfica del campo r<R
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ax1 = axes (tab1);
 subplot(2,1,1,ax1);%Cambiar
-Ein = gradient(Vin);
+Ein = gradient(-Vin);
 [Einx,Einy] = gradient(Vin);%Cambiar
-%Ein = -(Einx + Einy);%Cambiar
 C = Einx + Einy;%Cambiar
-[x,y] = pol2cart(r,theta);
-surf(ax1,x,y,Ein,C);%Cambiar
-colorbar
+[x,y] = pol2cart(theta,r);
+quiver3(ax1,x,y,Ein,C);%Cambiar
 axis( [-10, 10, -10, 10 ] );
 title( 'Campo eléctrico r<R', 'fontsize', 10, 'fontweight', 'normal' );
+xlabel("x");
+ylabel("y");
+zlabel("Ein");
 
 %%
 %Gráficas cuando r>R
@@ -98,20 +121,22 @@ title( 'Campo eléctrico r<R', 'fontsize', 10, 'fontweight', 'normal' );
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ax = axes (tab2);
 [r,theta] = meshgrid(2:0.1:10,0:pi./6:2 .*pi);
-A1 = R.^3 .*((6 ./5)+(-9 ./(6 .*e0)));
-B1 = (3 ./(2.*e0)+(6./5));%listo
+A1 = (3 .*R.^3) ./(10 .*e0);
+B1 = (3 ./(10 .*e0));%listo
 A3 = (12 .*R.^5)./(35 .*e0);
-B3 = 12 ./(e0.*35 .*R.^2);%listo
+B3 = 12 .*R.^5./(e0.*35);%listo
 %Gráfica del potencial r>R
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,1,2,ax);
-Vout = A1./r.^2 .*cos(theta) + A3./r.^4 .*(((5 .*(cos(theta)).^3)-(3 .*cos(theta)))./2);
+Vout = A1./r.^2 .*cos(theta) - A3./r.^4 .*(((5 .*(cos(theta)).^3)-(3 .*cos(theta)))./2);
 C = r.*theta;
-[x,y] = pol2cart(r,theta);
+[x,y] = pol2cart(theta,r);
 surf(ax,x,y,Vout,C);
-colorbar
 axis( [-10, 10, -10, 10 ] );
 title( 'Potencial eléctrico r>R', 'fontsize', 10, 'fontweight', 'normal' );
+xlabel("x");
+ylabel("y");
+zlabel("Vout");
 %Gráfica del campo r>R
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ax1 = axes (tab1);
@@ -119,8 +144,26 @@ subplot(2,1,2,ax1);%Cambiar
 Eout = gradient(-Vout);%Cambiar
 [Eoutx,Eouty] = gradient(Vout);%Cambiar
 C = Eout;%Cambiar
-[x,y] = pol2cart(r,theta);
-surf(ax1,x,y,Eout,C);%Cambiar
-colorbar
+[x,y] = pol2cart(theta,r);
+quiver3(ax1,x,y,Eout,C);%Cambiar
 axis( [-10, 10, -10, 10 ] );
 title( 'Campo eléctrico r>R', 'fontsize', 10, 'fontweight', 'normal' );
+xlabel("x");
+ylabel("y");
+zlabel("Eout");
+
+%%
+%Densidad
+%%
+
+ax3 = axes (tab3);
+[phi, theta] = meshgrid(0:pi./60:2 .*pi,-pi./2:pi./60:pi./2);
+C=-1.5.*cos(3 .*theta);
+[x,y,z] = sph2cart(phi,theta,R);
+surf(ax3,x,y,z,C);
+colorbar;
+title( 'Densidad superficial', 'fontsize', 10, 'fontweight', 'normal' );
+xlabel("x");
+ylabel("y");
+zlabel("z");
+set(get(colorbar,'Title'),'String','Densidad')
